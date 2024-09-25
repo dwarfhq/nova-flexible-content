@@ -3,6 +3,8 @@
 namespace Dwarfhq\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
@@ -18,6 +20,13 @@ use Dwarfhq\NovaFlexibleContent\Flexible;
 use Dwarfhq\NovaFlexibleContent\Http\FlexibleAttribute;
 use Dwarfhq\NovaFlexibleContent\Http\ScopedRequest;
 
+/**
+ * @template TKey of array-key
+ * @template TValue
+ *
+ * @implements \ArrayAccess<TKey, TValue>
+ * @implements \Illuminate\Contracts\Support\Arrayable<TKey, TValue>
+ */
 class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable
 {
     use HasAttributes;
@@ -87,7 +96,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The parent model instance
      *
-     * @var Illuminate\Database\Eloquent\Model
+     * @var \Illuminate\Database\Eloquent\Model
      */
     protected $model;
 
@@ -110,7 +119,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @var array
      */
-    protected  $relationResolvers = [];
+    protected $relationResolvers = [];
 
     /**
      * The loaded relationships for the Layout.
@@ -139,6 +148,16 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
         $this->removeCallbackMethod = $removeCallbackMethod;
         $this->setRawAttributes($this->cleanAttributes($attributes));
+    }
+
+    /**
+     * Determine if accessing missing attributes is disabled.
+     *
+     * @return bool
+     */
+    public static function preventsAccessingMissingAttributes()
+    {
+        return false;
     }
 
     /**
@@ -293,7 +312,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         // CUSTOM
         if ($field instanceof Image && (array_key_exists('image', $attributes) && !is_null($attributes['image']))) {
             $field->readonly();
-            $field->thumbnail(function() use ($attributes) {
+            $field->thumbnail(function () use ($attributes) {
                 return $attributes['image'] ? Storage::disk('azure')->url($attributes['image']) : null;
             });
         }
@@ -395,6 +414,22 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Force Fill the layout with an array of attributes.
+     *
+     * @param  array  $attributes
+     * @return $this
+     */
+    public function forceFill(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            $attribute = Str::replace('->', '.', $key);
+            Arr::set($this->attributes, $attribute, $value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get validation rules for fields concerned by given request
      *
      * @param  ScopedRequest  $request
@@ -422,17 +457,17 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected function getScopedFieldRules($field, ScopedRequest $request, $specificty, $key)
     {
-        $method = 'get'.ucfirst($specificty).'Rules';
+        $method = 'get' . ucfirst($specificty) . 'Rules';
 
         $rules = call_user_func([$field, $method], $request);
 
-        return  collect($rules)->mapWithKeys(function ($validatorRules, $attribute) use ($key, $field) {
-            $key = $key.'.attributes.'.$attribute;
+        return collect($rules)->mapWithKeys(function ($validatorRules, $attribute) use ($key, $field, $request) {
+            $key = $request->isFileAttribute($attribute)
+                ? $request->getFileAttribute($attribute)
+                : $key . '.attributes.' . $attribute;
 
             return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
-        })
-            ->filter()
-            ->all();
+        })->filter()->all();
     }
 
     /**
@@ -457,10 +492,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param  Dwarfhq\NovaFlexibleContent\Layout  $layout
      * @return mixed
      */
-    protected function removeCallback(Flexible $flexible, $layout)
-    {
-
-    }
+    protected function removeCallback(Flexible $flexible, $layout) {}
 
     /**
      * Wrap the rules in an array containing field information for later use
@@ -697,7 +729,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             throw new \Exception('No cryptographically secure random function available');
         }
 
-        return 'c'.substr(bin2hex($bytes), 0, 15);
+        return 'c' . substr(bin2hex($bytes), 0, 15);
     }
 
     /**

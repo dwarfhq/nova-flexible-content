@@ -1,4 +1,4 @@
-# ![Laravel Nova Flexible Content](https://github.com/whitecube/nova-flexible-content/raw/master/title.png)
+# ![Laravel Nova Flexible Content](https://github.com/Dwarf/nova-flexible-content/raw/master/title.png)
 
 An easy & complete Flexible Field for Laravel Nova, perfect for repeated and flexible field groups.
 
@@ -23,9 +23,10 @@ A flexible field allows easy management of repeatable and orderable groups of fi
 A layout represents a group of fields that can be repeated inside the Flexible field. You can add as many different layouts as you wish. If only one layout is defined the field will behave like a simple Repeater and by adding more layouts you'll obtain a Flexible Content. Both concepts are similar to [their cousins in Wordpress' ACF Plugin](https://www.advancedcustomfields.com/add-ons/).
 
 Layouts can be added using the following method on your Flexible fields:
+
 ```php
  addLayout(string $title, string $name, array $fields)
- ```
+```
 
 The `$name` parameter is used to store the chosen layout in the field's value. Choose it wisely, you'll probably use it to identify the layouts in your application.
 
@@ -57,6 +58,7 @@ public function fields(Request $request)
     ];
 }
 ```
+
 ![Example of Flexible layouts](https://user-images.githubusercontent.com/9298484/164533823-1b1b4934-75b8-49f2-92a0-a54812ccf463.png)
 
 #### Customizing the button label
@@ -155,7 +157,7 @@ class MyModel extends Model
 
 #### Writing a custom flexible cast
 
-By default, the `FlexibleCast` class will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/whitecube/nova-flexible-content#custom-layout-classes), it is also possible. First, create a custom flexible cast by running `php artisan flexible:cast MyFlexibleCast`. This will create the file in the `App\Casts` directory.
+By default, the `FlexibleCast` class will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/Dwarf/nova-flexible-content#custom-layout-classes), it is also possible. First, create a custom flexible cast by running `php artisan flexible:cast MyFlexibleCast`. This will create the file in the `App\Casts` directory.
 
 Then easily map your custom layout classes to the proper keys:
 
@@ -183,9 +185,9 @@ class MyFlexibleCast extends FlexibleCast
     protected function getLayoutMappings()
     {
         $mappings = [];
-        
+
         // Conditionally add mappings however you want
-        
+
         return $mappings;
     }
 }
@@ -193,7 +195,7 @@ class MyFlexibleCast extends FlexibleCast
 
 ### With the `HasFlexible` trait
 
-By implementing the `HasFlexible` trait on your models, you can call the `flexible($attribute)` method, which will automatically transform the attribute's value into a fully parsed `Whitecube\NovaFlexibleContent\Layouts\Collection`. Feel free to apply this `flexible()` call directly in your blade views or to extract it into an attribute's mutator method as shown below:
+By implementing the `HasFlexible` trait on your models, you can call the `flexible($attribute)` method, which will automatically transform the attribute's value into a fully parsed `Dwarf\NovaFlexibleContent\Layouts\Collection`. Feel free to apply this `flexible()` call directly in your blade views or to extract it into an attribute's mutator method as shown below:
 
 ```php
 namespace App;
@@ -212,7 +214,7 @@ class MyModel extends Model
 }
 ```
 
-By default, the `HasFlexible` trait will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/whitecube/nova-flexible-content#custom-layout-classes), it is also possible to specify the mapping rules as follows:
+By default, the `HasFlexible` trait will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/Dwarf/nova-flexible-content#custom-layout-classes), it is also possible to specify the mapping rules as follows:
 
 ```php
 public function getFlexibleContentAttribute()
@@ -250,14 +252,13 @@ Returns the layout's title (as shown in Nova).
 
 Returns the layout's unique key (the layout's unique identifier).
 
-
 ## Going further
 
 When using the Flexible Content field, you'll quickly come across of some use cases where the basics described above are not enough. That's why we developed the package in an extendable way, making it possible to easily add custom behaviors and/or capabilities to Field and its output.
 
 ## Custom Layout Classes
 
-Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class.
+Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class.
 
 ```php
 namespace App\Nova\Flexible\Layouts;
@@ -305,6 +306,7 @@ Flexible::make('Content')
 ```
 
 #### Limiting layouts per type
+
 You can limit how many times the "Add Layout" button will appear for a specific type in a custom Layout class by setting the `$limit` attribute.
 
 ```php
@@ -317,12 +319,12 @@ protected $limit = 1;
 You can specify any integer, or no integer at all; in that case it will default to 1.
 
 You can create these Layout classes easily with the following artisan command
+
 ```
 php artisan flexible:layout {classname?} {name?}
 
 // Ex: php artisan flexible:layout SimpleWysiwygLayout wysiwyg
 ```
-
 
 ## Predefined Preset Classes
 
@@ -376,31 +378,33 @@ class WysiwygPagePreset extends Preset
 Please note that Preset classes are resolved using Laravel's Container, meaning you can type-hint any useful dependency in the Preset's `__construct()` method.
 
 Once the Preset is defined, just reference its classname in your Flexible field using the `preset` method:
+
 ```php
 Flexible::make('Content')
     ->preset(\App\Nova\Flexible\Presets\WysiwygPagePreset::class);
 ```
 
 You can create these Preset classes easily with the following artisan command:
+
 ```
 php artisan flexible:preset {classname?}
 
 // Ex: php artisan flexible:preset WysiwygPagePreset
 ```
 
-
 ## Custom Resolver Classes
 
 By default, the field takes advantage of a **JSON column** on your model's table. In some cases, a JSON attribute is just not the way to go. For example, you could want to store the values in another table (meaning you'll be using the Flexible Content field instead of a traditional BelongsToMany or HasMany field). No worries, we've got you covered!
 
 First, create the new Resolver class. For convenience, this can be achieved using the following artisan command:
+
 ```
 php artisan flexible:resolver {classname?}
 
 // Ex: php artisan flexible:resolver WysiwygPageResolver
 ```
 
-It will place the new Resolver class in your project's `app/Nova/Flexible/Resolvers` directory. Each Resolver should implement the `Whitecube\NovaFlexibleContent\Value\ResolverInterface` contract and therefore feature at least two methods: `set` and `get`.
+It will place the new Resolver class in your project's `app/Nova/Flexible/Resolvers` directory. Each Resolver should implement the `Dwarf\NovaFlexibleContent\Value\ResolverInterface` contract and therefore feature at least two methods: `set` and `get`.
 
 ### Resolving the field
 
@@ -412,8 +416,8 @@ The `get` method is used to resolve the field's content. It is responsible to re
  *
  * @param  mixed  $resource
  * @param  string $attribute
- * @param  Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
- * @return Illuminate\Support\Collection
+ * @param  \Dwarf\NovaFlexibleContent\Layouts\Collection $layouts
+ * @return \Illuminate\Support\Collection
  */
 public function get($resource, $attribute, $layouts) {
     $blocks = $resource->blocks()->orderBy('order')->get();
@@ -438,7 +442,7 @@ The `set` method is responsible for saving the Flexible's content somewhere the 
  *
  * @param  mixed  $model
  * @param  string $attribute
- * @param  Illuminate\Support\Collection $groups
+ * @param  \Illuminate\Support\Collection $groups
  * @return void
  */
 public function set($model, $attribute, $groups)
@@ -462,11 +466,12 @@ public function set($model, $attribute, $groups)
 ```
 
 ## Usage with ebess/advanced-nova-media-library
+
 By popular demand, we have added compatibility with the advanced-nova-media-library field.
 This requires a few extra steps, as follows:
 
-1. You must use a [custom layout class](https://whitecube.github.io/nova-flexible-content/#/?id=custom-layout-classes).
-2. Your custom layout class must implement `Spatie\MediaLibrary\HasMedia` and use the `Whitecube\NovaFlexibleContent\Concerns\HasMediaLibrary` trait.
+1. You must use a [custom layout class](https://Dwarf.github.io/nova-flexible-content/#/?id=custom-layout-classes).
+2. Your custom layout class must implement `Spatie\MediaLibrary\HasMedia` and use the `Dwarf\NovaFlexibleContent\Concerns\HasMediaLibrary` trait.
 3. The parent model must implement `Spatie\MediaLibrary\HasMedia` and use the `Spatie\MediaLibrary\InteractsWithMedia` trait.
 
 Quick example, consider `Post` has a flexible field with a `SliderLayout`:
@@ -522,6 +527,7 @@ When adding a new feature or fixing a bug, please add corresponding unit tests. 
 Run PHPUnit by calling `composer test`.
 
 ## Made with ❤️ for open source
-At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
+
+At [Dwarf](https://www.Dwarf.be) we use a lot of open source software as part of our daily work.
 So when we have an opportunity to give something back, we're super excited!
-We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@whitecube.be) if you find it useful in your projects.
+We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@Dwarf.be) if you find it useful in your projects.

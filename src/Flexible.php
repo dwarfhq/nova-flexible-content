@@ -2,6 +2,7 @@
 
 namespace Dwarfhq\NovaFlexibleContent;
 
+use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\SupportsDependentFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -34,7 +35,7 @@ class Flexible extends Field
     /**
      * The currently defined layout groups
      *
-     * @var Illuminate\Support\Collection
+     * @var \Illuminate\Support\Collection
      */
     protected $groups;
 
@@ -160,7 +161,7 @@ class Flexible extends Field
         }
 
         if (! ($resolver instanceof ResolverInterface)) {
-            throw new \Exception('Resolver Class "'.get_class($resolver).'" does not implement ResolverInterface.');
+            throw new \Exception('Resolver Class "' . get_class($resolver) . '" does not implement ResolverInterface.');
         }
 
         $this->resolver = $resolver;
@@ -191,7 +192,7 @@ class Flexible extends Field
         }
 
         if (! ($layout instanceof LayoutInterface)) {
-            throw new \Exception('Layout Class "'.get_class($layout).'" does not implement LayoutInterface.');
+            throw new \Exception('Layout Class "' . get_class($layout) . '" does not implement LayoutInterface.');
         }
 
         $this->registerLayout($layout);
@@ -301,7 +302,7 @@ class Flexible extends Field
      * @param  string  $requestAttribute
      * @param  object  $model
      * @param  string  $attribute
-     * @return null|Closure
+     * @return void|\Closure
      */
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
@@ -335,26 +336,26 @@ class Flexible extends Field
      * @param  string  $requestAttribute
      * @return array
      */
-    protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
+    protected function syncAndFillGroups(NovaRequest $request, $requestAttribute): array
     {
         if (! ($raw = $this->extractValue($request, $requestAttribute))) {
             $this->fireRemoveCallbacks(collect());
             $this->groups = collect();
 
-            return;
+            return [];
         }
 
         $callbacks = [];
 
-        $new_groups = collect($raw)->map(function ($item, $key) use ($request, &$callbacks) {
+        $new_groups = collect($raw)->map(function ($item) use ($request, &$callbacks) {
             $layout = $item['layout'];
             $key = $item['key'];
             $attributes = $item['attributes'];
 
             $group = $this->findGroup($key) ?? $this->newGroup($layout, $key);
 
-            if (! $group) {
-                return;
+            if (! $group instanceof Layout) {
+                return [];
             }
 
             $scope = ScopedRequest::scopeFrom($request, $attributes, $key);
@@ -373,9 +374,9 @@ class Flexible extends Field
     /**
      * Fire's the remove callbacks on the layouts
      *
-     * @param $new_groups This should be (all) the new groups to bne compared against to find the removed groups
+     * @param  Collection  $new_groups This should be (all) the new groups to bne compared against to find the removed groups
      */
-    protected function fireRemoveCallbacks($new_groups)
+    protected function fireRemoveCallbacks(Collection $new_groups)
     {
         $new_group_keys = $new_groups->map(function ($item) {
             return $item->inUseKey();
@@ -414,8 +415,8 @@ class Flexible extends Field
     /**
      * Resolve all contained groups and their fields
      *
-     * @param  Illuminate\Support\Collection  $groups
-     * @return Illuminate\Support\Collection
+     * @param  \Illuminate\Support\Collection  $groups
+     * @return \Illuminate\Support\Collection
      */
     protected function resolveGroups($groups)
     {
@@ -428,8 +429,8 @@ class Flexible extends Field
      * Resolve all contained groups and their fields for display on index and
      * detail views.
      *
-     * @param  Illuminate\Support\Collection  $groups
-     * @return Illuminate\Support\Collection
+     * @param  \Illuminate\Support\Collection  $groups
+     * @return \Illuminate\Support\Collection
      */
     protected function resolveGroupsForDisplay($groups)
     {
@@ -444,7 +445,7 @@ class Flexible extends Field
      *
      * @param  mixed  $resource
      * @param  string  $attribute
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     protected function buildGroups($resource, $attribute)
     {
@@ -479,8 +480,8 @@ class Flexible extends Field
     {
         $layout = $this->layouts->find($layout);
 
-        if (! $layout) {
-            return;
+        if (! $layout instanceof Layout) {
+            return null;
         }
 
         return $layout->duplicate($key);
@@ -575,10 +576,10 @@ class Flexible extends Field
 
             $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
 
-            return $group->generateRules($scope, $specificty, $this->attribute.'.'.$key);
+            return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
         })
-                ->collapse()
-                ->all();
+            ->collapse()
+            ->all();
     }
 
     /**
@@ -608,7 +609,8 @@ class Flexible extends Field
         }, $rules);
 
         static::$validatedKeys = array_merge(
-            static::$validatedKeys, $validatedKeys
+            static::$validatedKeys,
+            $validatedKeys
         );
     }
 

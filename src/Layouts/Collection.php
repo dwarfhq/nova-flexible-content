@@ -4,13 +4,21 @@ namespace Dwarfhq\NovaFlexibleContent\Layouts;
 
 use Illuminate\Support\Collection as BaseCollection;
 
+/**
+ * @template TKey of array-key
+ * @template TLayout of \Dwarf\NovaFlexibleContent\Layouts\Layout
+ *
+ * @extends \Illuminate\Support\Collection<TKey, TLayout>
+ */
 class Collection extends BaseCollection
 {
     /**
      * Find a layout based on its name
      *
      * @param  string  $name
-     * @return mixed
+     * @return \Dwarf\NovaFlexibleContent\Layouts\Layout|null
+     *
+     * @psalm-return TLayout|null
      */
     public function find($name)
     {
