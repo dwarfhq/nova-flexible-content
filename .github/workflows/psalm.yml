@@ -28,6 +28,10 @@ jobs:
           php-version: 8.1
           coverage: none
 
+      - name: Composer auth
+        run: |
+          composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_LICENSE_KEY }}
+
       - name: Install composer dependencies
         run: |
           composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_LICENSE_KEY }}
