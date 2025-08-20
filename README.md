@@ -8,6 +8,10 @@ An easy & complete Flexible Field for Laravel Nova, perfect for repeated and fle
 
 ![Laravel Nova Flexible Content in action](https://user-images.githubusercontent.com/9298484/164532562-6e4e4179-8a53-470c-97c8-237e9a2c2ebb.gif)
 
+## We are looking for someone to help us maintain this package!
+
+We'd love to accept someone who uses this package a lot to help us review and merge incoming PRs. Shoot us a message at hello@whitecube.be if you're willing to help!
+
 ## Quick start
 
 Here's a very condensed guide to get you started asap.
@@ -157,7 +161,7 @@ Tell the field how to store and retrieve its content by creating your own Resolv
 
 Maybe you heard of one of our other packages, [nova-page](https://github.com/whitecube/nova-page), which is a Nova Tool that allows to edit static pages such as an _"About"_ page (or similar) without having to declare a model for it individually. More often than not, the Flexible Content Field comes in handy. Don't worry, both packages work well together! First create a [nova page template](https://github.com/whitecube/nova-page#creating-templates) and add a [flexible content](https://github.com/whitecube/nova-flexible-content#adding-layouts) to the template's fields.
 
-As explained in the documentation, you can [access nova-page's static content](https://github.com/whitecube/nova-page#accessing-the-data-in-your-views) in your blade views using `{{ Page::get('attribute') }}`. When requesting the flexible content like this, it returns a raw JSON string describing the flexible content, which is of course not very useful. Instead, you can simply implement the `Whitecube\NovaFlexibleContent\Concerns\HasFlexible` trait on your page Templates, which will expose the `Page::flexible('attribute')` facade method and will take care of the flexible content's transformation.
+As explained in the documentation, you can [access nova-page's static content](https://github.com/whitecube/nova-page#accessing-the-data-in-your-views) in your blade views using `{{ Page::get('attribute') }}`. When requesting the flexible content like this, it returns a raw JSON string describing the flexible content, which is of course not very useful. Instead, you can simply implement the `Dwarfhq\NovaFlexibleContent\Concerns\HasFlexible` trait on your page Templates, which will expose the `Page::flexible('attribute')` facade method and will take care of the flexible content's transformation.
 
 ```php
 namespace App\Nova\Templates;
@@ -191,7 +195,7 @@ Run PHPUnit by calling `composer test`.
 
 ## Made with ❤️ for open source
 
-At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
+At [Dwarfhq](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
 So when we have an opportunity to give something back, we're super excited!
 
 We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@whitecube.be) if you find it useful in your projects. Follow us on [Twitter](https://twitter.com/whitecube_be) for more updates!
