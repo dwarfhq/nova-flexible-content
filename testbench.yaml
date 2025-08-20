@@ -3,7 +3,7 @@ laravel: '@testbench'
 providers:
   - Laravel\Nova\NovaServiceProvider
   - Laravel\Nova\NovaCoreServiceProvider
-  - Whitecube\NovaFlexibleContent\FieldServiceProvider
+  - Dwarfhq\NovaFlexibleContent\FieldServiceProvider
   - Workbench\App\Providers\NovaServiceProvider
   # - Workbench\App\Providers\WorkbenchServiceProvider
 

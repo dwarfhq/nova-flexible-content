@@ -193,7 +193,7 @@ class MyFlexibleCast extends FlexibleCast
 
 ### With the `HasFlexible` trait
 
-By implementing the `HasFlexible` trait on your models, you can call the `flexible($attribute)` method, which will automatically transform the attribute's value into a fully parsed `Whitecube\NovaFlexibleContent\Layouts\Collection`. Feel free to apply this `flexible()` call directly in your blade views or to extract it into an attribute's mutator method as shown below:
+By implementing the `HasFlexible` trait on your models, you can call the `flexible($attribute)` method, which will automatically transform the attribute's value into a fully parsed `Dwarfhq\NovaFlexibleContent\Layouts\Collection`. Feel free to apply this `flexible()` call directly in your blade views or to extract it into an attribute's mutator method as shown below:
 
 ```php
 namespace App;
@@ -400,7 +400,7 @@ php artisan flexible:resolver {classname?}
 // Ex: php artisan flexible:resolver WysiwygPageResolver
 ```
 
-It will place the new Resolver class in your project's `app/Nova/Flexible/Resolvers` directory. Each Resolver should implement the `Whitecube\NovaFlexibleContent\Value\ResolverInterface` contract and therefore feature at least two methods: `set` and `get`.
+It will place the new Resolver class in your project's `app/Nova/Flexible/Resolvers` directory. Each Resolver should implement the `Dwarfhq\NovaFlexibleContent\Value\ResolverInterface` contract and therefore feature at least two methods: `set` and `get`.
 
 ### Resolving the field
 
@@ -412,7 +412,7 @@ The `get` method is used to resolve the field's content. It is responsible to re
  *
  * @param  mixed  $resource
  * @param  string $attribute
- * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
+ * @param  \Dwarfhq\NovaFlexibleContent\Layouts\Collection $layouts
  * @return \Illuminate\Support\Collection
  */
 public function get($resource, $attribute, $layouts) {
@@ -466,7 +466,7 @@ By popular demand, we have added compatibility with the advanced-nova-media-libr
 This requires a few extra steps, as follows:
 
 1. You must use a [custom layout class](https://whitecube.github.io/nova-flexible-content/#/?id=custom-layout-classes).
-2. Your custom layout class must implement `Spatie\MediaLibrary\HasMedia` and use the `Whitecube\NovaFlexibleContent\Concerns\HasMediaLibrary` trait.
+2. Your custom layout class must implement `Spatie\MediaLibrary\HasMedia` and use the `Dwarfhq\NovaFlexibleContent\Concerns\HasMediaLibrary` trait.
 3. The parent model must implement `Spatie\MediaLibrary\HasMedia` and use the `Spatie\MediaLibrary\InteractsWithMedia` trait.
 
 Quick example, consider `Post` has a flexible field with a `SliderLayout`:
@@ -522,6 +522,6 @@ When adding a new feature or fixing a bug, please add corresponding unit tests. 
 Run PHPUnit by calling `composer test`.
 
 ## Made with ❤️ for open source
-At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
+At [Dwarfhq](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
 So when we have an opportunity to give something back, we're super excited!
 We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@whitecube.be) if you find it useful in your projects.

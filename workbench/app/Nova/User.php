@@ -10,7 +10,7 @@ use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Whitecube\NovaFlexibleContent\Flexible;
+use Dwarfhq\NovaFlexibleContent\Flexible;
 
 class User extends Resource
 {

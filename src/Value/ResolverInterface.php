@@ -10,8 +10,8 @@ interface ResolverInterface
      *
      * @param  mixed  $resource
      * @param  string  $attribute
-     * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection  $layouts
-     * @return  \Illuminate\Support\Collection<array-key, \Whitecube\NovaFlexibleContent\Layouts\Layout>
+     * @param  \Dwarfhq\NovaFlexibleContent\Layouts\Collection  $layouts
+     * @return  \Illuminate\Support\Collection<array-key, \Dwarfhq\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($resource, $attribute, $layouts);
 
@@ -21,7 +21,7 @@ interface ResolverInterface
      *
      * @param  mixed  $resource
      * @param  string  $attribute Attribute name set for a Flexible field.
-     * @param  \Illuminate\Support\Collection<int, \Whitecube\NovaFlexibleContent\Layouts\Layout>  $groups
+     * @param  \Illuminate\Support\Collection<int, \Dwarfhq\NovaFlexibleContent\Layouts\Layout>  $groups
      * @return  mixed
      */
     public function set($resource, $attribute, $groups);

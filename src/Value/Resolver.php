@@ -31,7 +31,7 @@ class Resolver implements ResolverInterface
      * @param  mixed  $resource
      * @param  string  $attribute
      * @param  Dwarfhq\NovaFlexibleContent\Layouts\Collection  $layouts
-     * @return \Illuminate\Support\Collection<int, \Whitecube\NovaFlexibleContent\Layouts\Layout>
+     * @return \Illuminate\Support\Collection<int, \Dwarfhq\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($resource, $attribute, $layouts)
     {

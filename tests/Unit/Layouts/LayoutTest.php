@@ -5,7 +5,7 @@ namespace Tests\Unit\Layouts;
 use PHPUnit\Framework\TestCase;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Text;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Dwarfhq\NovaFlexibleContent\Layouts\Layout;
 
 class LayoutTest extends TestCase
 {
