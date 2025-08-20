@@ -1,64 +1,98 @@
 <template>
-    <PanelItem :field="field">
-        <template #value>
-            <div v-for="(group, index) in groups">
-                <detail-nova-flexible-content-group
-                    :index="index"
-                    :last="(index === groups.length - 1)"
-                    :group="group"
-                    :resourceName="resourceName"
-                    :resourceId="resourceId"
-                    :attribute="field.attribute"
-                />
-            </div>
-        </template>
-    </PanelItem>
+  <PanelItem :index="index" :field="field">
+    <template #value>
+      <div v-for="(group, index) in orderedGroups">
+        <detail-nova-flexible-content-group
+          :index="index"
+          :last="index === groups.length - 1"
+          :group="group"
+          :key="group.key"
+          :resource="resource"
+          :resourceName="resourceName"
+          :resourceId="resourceId"
+          :attribute="field.attribute"
+        />
+      </div>
+    </template>
+  </PanelItem>
 </template>
 
 <script>
-import Group from '../group';
+import Group from "../group";
 
 export default {
+  props: ["resource", "resourceName", "resourceId", "field"],
+  data: () => ({
+    order: [],
+    groups: {},
+  }),
 
-    props: ['resource', 'resourceName', 'resourceId', 'field'],
+  computed: {
+    layouts() {
+      return this.field.layouts || false;
+    },
+    orderedGroups() {
+      this.value = this.field.value || [];
 
-    computed: {
-        groups() {
-            let group;
-            return this.field.value.reduce((groups, item) => {
-                if(!(group = this.getGroup(item))) return groups;
-                groups.push(group);
-                return groups;
-            }, []);
-        }
+      this.populateGroups();
+
+      return this.order.reduce((groups, key) => {
+        groups.push(this.groups[key]);
+        return groups;
+      }, []);
+    },
+  },
+
+  methods: {
+    /*
+     * Set the displayed layouts from the field's current value
+     */
+    populateGroups() {
+      this.order.splice(0, this.order.length);
+      this.groups = {};
+
+      for (var i = 0; i < this.value.length; i++) {
+        this.addGroup(
+          this.getLayout(this.value[i].layout),
+          this.value[i].attributes,
+          this.value[i].key,
+          this.field.collapsed,
+          this.value[i].title_data,
+        );
+      }
     },
 
-    methods: {
-        /**
-         * Retrieve layout definition from its name
-         */
-        getLayout(name) {
-            if(!this.field.layouts) return;
-            return this.field.layouts.find(layout => layout.name == name);
-        },
+    /**
+     * Retrieve layout definition from its name
+     */
+    getLayout(name) {
+      if (!this.layouts) return;
+      return this.layouts.find((layout) => layout.name == name);
+    },
 
-        /**
-         * create group instance from raw field value
-         */
-        getGroup(item) {
+    /**
+     * Append the given layout to flexible content's list
+     */
+    addGroup(layout, attributes, key, collapsed, resolved_title) {
+      if (!layout) return;
 
-            let layout = this.getLayout(item.layout);
+      collapsed = collapsed || false;
 
-            if(!layout) return;
+      let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
+        group = new Group(
+          layout.name,
+          layout.title,
+          fields,
+          this.field,
+          key,
+          collapsed,
+          layout,
+          resolved_title,
+        );
 
-            return new Group(
-                layout.name,
-                layout.title,
-                item.attributes,
-                this.field,
-                item.key
-            );
-        },
-    }
-}
+      this.groups[group.key] = group;
+      this.order.push(group.key);
+    },
+  },
+};
 </script>
